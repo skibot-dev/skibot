@@ -1,0 +1,17 @@
+node_modules/
+*.log
+**/tmp
+**/temp
+**/build
+**/dist
+.vscode/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+config/config.yml
+/dist/
+plugins/*/
+plugins/*.*
+.idea/
+data/*.*
+data/jwt/*.*
