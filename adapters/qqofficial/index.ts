@@ -3,19 +3,24 @@ import path from 'path';
 import fs from 'fs';
 import axios from 'axios';
 import * as events from '../../app/events.js';
-import { BaseMessage,Data } from '../../app/messages.js';
+import { BaseMessage,MessageClass } from '../../app/messages.js';
 const __dirname = process.cwd();
 let heartbeat_interval = 45000;
 const configFilePath = path.resolve(__dirname, './adapters/qqofficial/config.json');
 const config = JSON.parse(fs.readFileSync(configFilePath, 'utf8'));
 const endpoint = "wss://api.sgroup.qq.com/websocket"
 let s = null
-
+function replaceDomain(data) {
+    const domainRegex = /(https?:\/\/)?([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})/g;
+    return data.replace(domainRegex, function(match, protocol, domain) {
+        return (protocol || '') + '    ';
+    });
+}
 export class SendMessage {
     static async send_private_msg(openid: any, message: Message, msg_id: string) {
         const post_data = {}
-        post_data['msg_type'] = message.json().data.msg_type;
-        post_data['content'] = message.json().data.content;
+        post_data['msg_type'] = message.json()[0].data.msg_type
+        post_data['content'] = replaceDomain(message.json()[0].data.content)
         post_data['event_id'] = 'C2C_MESSAGE_CREATE';
         post_data['msg_id'] = msg_id;
         return await axios.post(`https://api.sgroup.qq.com/v2/users/${openid}/messages`, post_data,{
@@ -26,53 +31,41 @@ export class SendMessage {
     }
     static async send_group_msg(group_id: any, message: Message, msg_id: string) {
         const post_data = {}
-        post_data['msg_type'] = message.json().data.msg_type;
-        post_data['content'] = message.json().data.content;
+        post_data['msg_type'] = message.json()[0].data.msg_type
+        post_data['content'] = replaceDomain(message.json()[0].data.content)
         post_data['event_id'] = 'GROUP_MESSAGE_CREATE';
         post_data['msg_id'] = msg_id;
         return await axios.post(`https://api.sgroup.qq.com/v2/groups/${group_id}/messages`, post_data, {
-    headers: {
-        "Authorization": `QQBot ${await getToken()}`,
+            headers: {
+                "Authorization": `QQBot ${await getToken()}`,
+            } 
+        });
     } 
-});
-
-} 
-
 }
 
 
+interface Data {
+    type: number;
+    data: {
+      msg_type: number;
+      content: string;
+    };
+  }
 
-export class Message extends Array<BaseMessage> {
-    static build() {
-        return new Message();
-    }
-    pushMessage(type: any, data: Data): this {
-            return this.addMessage(new BaseMessage(type, data));
-        }
-    addMessage(object: any){
-        if (object instanceof Message) {
-            this.union(object);
-            return this;
-        }
-        super.push(object);
-        return this;
-    }
-    union(...s: Message[]): this {
-        for (const msg of s) {
-            for (const baseMessage of msg) {
-                this.addMessage(baseMessage);
-            }
-        }
-        return this;
-
-    }
-    json(){
-        if (this.some(v => v.type === 0)) {
-            const message = this.find(v => v.type === 0);
-            return message
-        }
-    }
-    
+export class Message extends MessageClass {
+    json(): Data[]{
+        const contents = this.map(item => item.data.content);
+  const mergedContent = contents.join('');
+  return [
+    {
+      ...this[0],
+      data: {
+        msg_type: this[0].data.msg_type,
+        content: mergedContent,
+      },
+    },
+]
+}
 }
 
 export class MessageSegment {

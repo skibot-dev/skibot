@@ -38,11 +38,11 @@ export class BaseMessage {
 }
 
 export class MessageClass extends Array<BaseMessage> {
-    json(): { type: string; data: Data }[] {
+    json(){
         return this.map(v => v.json());
     }
 
-    cq(): string {
+    cq(){
         return this.map(v => v.cq()).join('');
     }
     addMessage(object: any): this {
@@ -54,7 +54,7 @@ export class MessageClass extends Array<BaseMessage> {
         return this;
     }
 
-    pushMessage(type: string, data: Data): this {
+    pushMessage(type: any, data: Data): this {
         return this.addMessage(new BaseMessage(type, data));
     }
 
