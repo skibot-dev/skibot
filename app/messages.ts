@@ -7,15 +7,15 @@ const CQ_TABLES: { [key: string]: string } = {
     ",": "&#44;"
 };
 
-interface Data {
+export interface Data {
     [key: string]: any;
 }
 
-class BaseMessage {
-    type: string;
+export class BaseMessage {
+    type: any;
     data: Data;
 
-    constructor(type: string, data: Data) {
+    constructor(type: any, data: Data) {
         this.type = type;
         this.data = data;
     }
@@ -128,7 +128,7 @@ function unescapeMessage(value: string): string {
     return value;
 }
 if (config.get('adapter.enable')) {
-    import(`../adapters/${config.get('adapter.use')}.js`)
+    import(`../adapters/${config.get('adapter.use')}/index.js`)
         .then(adapert => {
             Message = adapert.Message;
             MessageSegment = adapert.MessageSegment;

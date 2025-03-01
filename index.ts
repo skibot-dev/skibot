@@ -105,19 +105,18 @@ async function initialize() {
     logger.info(JSON.stringify(event));
   });
 
-  bot.command('about', '获取关于信息', (args, Handler: HandlerClass, msg: MessageClass) => {
+  bot.command('about', '获取关于信息', async(args, Handler: HandlerClass, msg: MessageClass) => {
     msg.addMessage(MessageSegment.text(`SkiBot v${version} \nAuthor: @unify-z \nhttps://github.com/unify-z/skibot`));
     Handler.finish(msg);
   });
 
-  bot.command('help', '获取帮助信息', (args, handler: HandlerClass, msg: MessageClass, event) => {
+  bot.command('help', '获取帮助信息', async(args, handler: HandlerClass, msg: MessageClass, event) => {
     let help_msg = '当前共有以下可用指令: \n';
     for (const _command of bot.commands) {
       const command = _command.command;
       const desc = _command.description;
       help_msg += `${config.get("prefix")}${command} - ${desc}\n`;
     }
-    msg.addMessage(MessageSegment.reply(event.message_id));
     msg.addMessage(MessageSegment.text(help_msg));
     handler.finish(msg);
   });
@@ -163,13 +162,15 @@ function cleanCount() {
     database.updateOne('messagesLengthHistory', []);
   }
 }
+
+logger.info(`booting skibot v${version}`)
 process.on("SIGINT", onStop);
 process.on("SIGTERM", onStop);
 schedule.scheduleJob('0 0 * * *', updateCountHistory);
 schedule.scheduleJob('0 0 * * *', cleanCount);
 initialize();
 if (config.get('adapter.enable')) {
-  import(`./adapters/${config.get('adapter.use')}.js`)
+  import(`./adapters/${config.get('adapter.use')}/index.js`)
       .then(adapert => {
           adapert.init()
       })

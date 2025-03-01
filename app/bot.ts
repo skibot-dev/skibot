@@ -214,7 +214,7 @@ let SendMessage = SendMessageClass;
 let Handler = HandlerClass;
 if (config.get('adapter.enable')) {
     (async () => {
-        const adapter = await import(`../adapters/${config.get('adapter.use')}.js`);
+        const adapter = await import(`../adapters/${config.get('adapter.use')}/index.js`);
         Handler = adapter.Handler;
         SendMessage = adapter.SendMessage;
     })();

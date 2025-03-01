@@ -55,11 +55,11 @@ export class BotEvent {
 }
 export class BotMessageEvent extends BotEvent {
     message_id: number;
-    message: MessageClass;
+    message: any;
     raw_message: string;
     sender: MessageSender;
 
-    constructor(time: number, self_id: number, message_id: number, message: MessageClass, raw_message: string, sender: MessageSender) {
+    constructor(time: number, self_id: number, message_id: number, message: any, raw_message: string, sender: MessageSender) {
         super(time, self_id);
         this.message_id = message_id;
         this.message = message;
@@ -174,7 +174,7 @@ export class PrivateMessageEvent extends BotMessageEvent {
     message_type: string = "private";
     user_id: number;
 
-    constructor(time: number, self_id: number, message_id: number, message: MessageClass, raw_message: string, sender: MessageSender, user_id: number) {
+    constructor(time: number, self_id: number, message_id: number, message: any, raw_message: string, sender: MessageSender, user_id: number) {
         super(time, self_id, message_id, message, raw_message, sender);
         this.user_id = user_id;
     }
@@ -198,7 +198,7 @@ export class GroupMessageEvent extends BotMessageEvent {
     group_id: number;
     user_id: number;
 
-    constructor(time: number, self_id: number, message_id: number, message: MessageClass, raw_message: string, sender: MessageSender, group_id: number, user_id: number) {
+    constructor(time: number, self_id: number, message_id: number, message: any, raw_message: string, sender: MessageSender, group_id: number, user_id: number) {
         super(time, self_id, message_id, message, raw_message, sender);
         this.group_id = group_id;
         this.user_id = user_id;
@@ -213,7 +213,7 @@ export class GroupAnonymousMessageEvent extends GroupMessageEvent {
     sub_type: string = "anonymous";
     anonymous: MessageAnonymous;
 
-    constructor(time: number, self_id: number, message_id: number, message: MessageClass, raw_message: string, sender: MessageSender, group_id: number, user_id: number, anonymous: MessageAnonymous) {
+    constructor(time: number, self_id: number, message_id: number, message: any, raw_message: string, sender: MessageSender, group_id: number, user_id: number, anonymous: MessageAnonymous) {
         super(time, self_id, message_id, message, raw_message, sender, group_id, user_id);
         this.anonymous = anonymous;
     }
@@ -548,6 +548,9 @@ export function matchEvents(eventData: any): void {
 }
 
 export {
-    updateEvent
+    updateEvent,
+    MessageSender,
+    MessageAnonymous,
+    GroupUploadFile,
 }
 

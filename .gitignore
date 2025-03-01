@@ -12,6 +12,9 @@ config/config.yml
 /dist/
 plugins/*/
 plugins/*.*
+**/config.json
 .idea/
 data/*.*
 data/jwt/*.*
+**/cert
+/logs

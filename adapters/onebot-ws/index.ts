@@ -1,6 +1,7 @@
-import * as events from '../app/events.js';
-import { GroupMessageEvent } from '../app/events.js';
-import logger from '../app/log.js';
+import { waitForDebugger } from 'inspector';
+import * as events from '../../app/events.js';
+import { GroupMessageEvent } from '../../app/events.js';
+import {adapterLog} from '../../app/log.js';
 
 const ws = new WebSocket('ws://127.0.0.1:3001');
 
@@ -359,7 +360,9 @@ ws.onmessage = (event) => {
 }
 
 function init(){
-    console.log('init',ws.OPEN)
+    if (ws.OPEN === 1){
+        adapterLog.info("Websocket Connection Established")
+    }
 }
 
 export {
