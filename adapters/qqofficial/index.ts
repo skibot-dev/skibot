@@ -193,12 +193,10 @@ export function init() {
                 }
             };
             socket.send(JSON.stringify(data));
-            
-            // 设置新的心跳定时器
             heartbeatTimer = setInterval(() => {
                 const data = {
                     "op": 1,
-                    "d": s // 注意：这里需要确认s变量的有效性
+                    "d": s
                 };
                 adapterLog.debug(`Send heartbeat message ${JSON.stringify(data)}`);
                 if (socket.readyState === WebSocket.OPEN) {

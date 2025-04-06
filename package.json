@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon",
-    "start": "npx tsc && nodemon --exec 'node ./dist/index.js | ./node_modules/.bin/bunyan'",
+    "start": "npx tsc && nodemon --exec 'node ./dist/index.js'",
     "build": "npx tsc",
     "build-dashboard": "cd frontend && npm run build",
     "create-plugin": "node scripts/create-plugin.js",
@@ -17,7 +17,6 @@
     "@tsconfig/node20": "^20.1.4",
     "async": "^3.2.6",
     "axios": "^1.7.9",
-    "bunyan": "^1.8.15",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express-async-errors": "^3.1.1",
@@ -41,7 +40,7 @@
     "nodemon": "^3.1.9"
   },
   "nodemonConfig": {
-    "exec": "npm run build && node ./dist/index.js | ./node_modules/.bin/bunyan",
+    "exec": "npm run build && node ./dist/index.js",
     "watch": [
       "."
     ],
@@ -49,7 +48,8 @@
       "logs/**",
       "data/**",
       "dist/**",
-      "node_modules/**"
+      "node_modules/**",
+      "plugins/**"
     ],
     "ext": "ts,yml,json",
     "delay": "1000",
